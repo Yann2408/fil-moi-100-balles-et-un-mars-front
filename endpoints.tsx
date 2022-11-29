@@ -1,5 +1,5 @@
 const endpoints = {
-    test: '/api/test'
+    // test: '/api/test'
 
 }
 

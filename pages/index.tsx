@@ -7,7 +7,7 @@ const Index = () => {
   const router = useRouter()
 
   useEffect(() => {
-    router.push('/login')
+    router.push('/home')
   }, [router])
 
   return <Loader />
