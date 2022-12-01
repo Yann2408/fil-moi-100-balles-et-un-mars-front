@@ -98,7 +98,7 @@ const FormLogin = (): JSX.Element => {
                         label="email"
                         margin="normal"
                         variant="filled"
-                        size="medium"
+                        size="small"
                         fullWidth
                         autoFocus
                         autoComplete="email"
@@ -114,10 +114,9 @@ const FormLogin = (): JSX.Element => {
                 render={({ field }) =>
                     <TextField
                         type={showPassword ? 'text' : 'password'}
-                        data-cy="password"
                         label="Mot de passe"
                         margin="normal"
-                        size="medium"
+                        size="small"
                         variant="filled"
                         fullWidth
                         autoComplete="current-password"
@@ -143,7 +142,7 @@ const FormLogin = (): JSX.Element => {
                 fullWidth
                 variant="contained"
                 loading={loading}
-                size="large"
+                size="medium"
                 sx={{ mt: 3, mb: 1, py: 1 }}
             >
                 Se connecter
