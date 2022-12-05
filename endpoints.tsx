@@ -1,5 +1,8 @@
 const endpoints = {
-    // test: '/api/test'
+
+    tissus: {
+        all: '/api/tissus'
+    } 
 
 }
 
