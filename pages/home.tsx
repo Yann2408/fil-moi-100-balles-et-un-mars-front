@@ -1,9 +1,14 @@
+import { Box, Typography } from "@mui/material"
+import { Container } from "@mui/system"
+import { NextPage } from "next"
+import Navbar from "../components/organisms/navbar"
 
-const home = (): JSX.Element => {
+const home: NextPage = () => {
     return(
-        <div>
-            hello world
-        </div>
+        <Container>
+            <Navbar />
+            <Typography>Hello world</Typography>
+        </Container>
     )
 }
 
