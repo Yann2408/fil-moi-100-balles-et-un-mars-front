@@ -12,7 +12,7 @@ export default interface ITissu {
     oekotex: boolean
     bio: boolean
     rating: number
-    comment: string
-    user_id: number
-    tissu_type_id: number
+    comment?: string
+    user_id?: number
+    tissu_type_id?: number
   }
