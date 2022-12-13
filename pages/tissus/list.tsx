@@ -1,7 +1,7 @@
-import { Button, Link, Stack, Typography } from "@mui/material"
+import { Button, Link, SelectChangeEvent, Stack, Typography } from "@mui/material"
 import { Container } from "@mui/system"
 import { NextPage } from "next"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Controller } from "react-hook-form"
 import useSWR from "swr"
 import NormalCard from "../../components/atoms/card"
@@ -19,60 +19,78 @@ const TissusList: NextPage = () => {
 
     const { fetcher } = useApi()
 
-    const [filtredTissus, setFiltredTissus] = useState<ITissu[]>([{
-        id: 1,
-        name: "tissu 1",
-        material: "blabla",
-        weight: 2,
-        laize: 2,
-        price: 2,
-        stock: 2,
-        by_on: "blabla",
-        scrap: true,
-        pre_wash: true,
-        oekotex: true,
-        bio: true,
-        rating: 2,
-        comment: "blabla"
-    },
-    {
-        id: 2,
-        name: "tissu 2",
-        material: "blabla",
-        weight: 2,
-        laize: 2,
-        price: 2,
-        stock: 0,
-        by_on: "blabla",
-        scrap: true,
-        pre_wash: true,
-        oekotex: true,
-        bio: true,
-        rating: 2,
-        comment: "blabla"
-    },
-    {
-        id: 3,
-        name: "tissu 3",
-        material: "blabla",
-        weight: 2,
-        laize: 2,
-        price: 2,
-        stock: 2,
-        by_on: "blabla",
-        scrap: true,
-        pre_wash: true,
-        oekotex: true,
-        bio: true,
-        rating: 2,
-        comment: "blabla"
-    }])
+    const tissus = [
+        {
+            id: 1,
+            name: "tissu 1",
+            material: "blabla",
+            weight: 2,
+            laize: 2,
+            price: 2,
+            stock: 2,
+            by_on: "blabla",
+            scrap: true,
+            pre_wash: true,
+            oekotex: true,
+            bio: true,
+            rating: 2,
+            comment: "blabla"
+        },
+        {
+            id: 2,
+            name: "tissu 2",
+            material: "blabla",
+            weight: 2,
+            laize: 2,
+            price: 2,
+            stock: 0,
+            by_on: "blabla",
+            scrap: true,
+            pre_wash: true,
+            oekotex: true,
+            bio: true,
+            rating: 2,
+            comment: "blabla"
+        },
+        {
+            id: 3,
+            name: "tissu 3",
+            material: "blabla",
+            weight: 2,
+            laize: 2,
+            price: 2,
+            stock: 2,
+            by_on: "blabla",
+            scrap: true,
+            pre_wash: true,
+            oekotex: true,
+            bio: true,
+            rating: 2,
+            comment: "blabla"
+        }]
 
     // const { data: tissus } = useSWR<ITissu[]>({
     //     url: endpoints.tissus.all,
     //     args: {
     //     }
     // }, fetcher)
+
+    const [tissuValue, setTissuValue] = useState<string | undefined>('')
+
+    const [selectedTissu, setSelectedTissu] = useState<ITissu[]>([])
+
+    const handleTissuChange = (event: SelectChangeEvent) => {
+        setTissuValue(event.target.value);
+    };
+
+    useEffect(() => {
+        if (tissus && tissuValue !== '') {
+            const selectedTissu = tissus.filter((tissu) => tissu.name === tissuValue)
+            setSelectedTissu(selectedTissu)
+        } else {
+            setSelectedTissu(tissus)
+        }
+    }, [tissuValue])
 
     return (
 
@@ -85,15 +103,18 @@ const TissusList: NextPage = () => {
             </Stack>
 
             <Stack justifyContent={"center"} sx={{ mb: 2 }}>
-                <TissuSelector />
+                <TissuSelector
+                    value={tissuValue}
+                    onChange={handleTissuChange}
+                />
             </Stack>
 
             <Stack justifyContent={"center"} >
-                 <TissuTypeSelector />
+                <TissuTypeSelector />
             </Stack>
 
 
-            {filtredTissus.map(function (tissu) {
+            {selectedTissu.map(function (tissu) {
                 return (
                     <NormalCard>
                         <Stack>

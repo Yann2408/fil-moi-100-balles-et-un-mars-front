@@ -11,6 +11,7 @@ const TissuTypeSelector = (props: TextFieldProps, ref: ForwardedRef<HTMLDivEleme
   const { fetcher } = useApi()
 
   const { label, fullWidth = false, value } = props
+
   // const { data: tissuTypes } = useSWR<ITissuType[]>({
   //   url: endpoints.tissuTypes.all,
   //   args: {}
@@ -24,7 +25,17 @@ const TissuTypeSelector = (props: TextFieldProps, ref: ForwardedRef<HTMLDivEleme
 
   return tissuTypes ? <FormControl sx={fullWidth ? { width: '100%' } : { minWidth: 300 }}
   >
-    <Autocomplete
+
+    {/* <Autocomplete 
+      multiple
+      limitTags={2}
+      size="small"
+      value={value}
+
+    /> */}
+
+
+    {/* <Autocomplete
       multiple
       limitTags={2}
       size="small"
@@ -55,7 +66,7 @@ const TissuTypeSelector = (props: TextFieldProps, ref: ForwardedRef<HTMLDivEleme
           {...props}
         />
       )}
-    />
+    /> */}
   </FormControl> : <></>
 
 }

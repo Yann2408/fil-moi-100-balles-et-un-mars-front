@@ -1,16 +1,23 @@
-import { Autocomplete, Box, FormControl, TextField, TextFieldProps } from '@mui/material';
-import React, { ForwardedRef, forwardRef } from 'react';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import React, { forwardRef, ReactNode } from 'react';
 import useSWR from 'swr';
 import endpoints from '../../../endpoints';
 import useApi from '../../../hooks/api';
 import ITissu from '../../../interfaces/tissus.interface';
 
-const TissuSelector = (props: TextFieldProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
+interface TissuSelectorProps {
+  value: string | undefined
+  onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void
+}
+
+
+// const TissuSelector = (props: TextFieldProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
+const TissuSelector = (props: TissuSelectorProps,): JSX.Element => {
 
 
   const { fetcher } = useApi()
 
-  const { label, fullWidth = false, value } = props
+  const { value, onChange } = props
   // const { data: tissu } = useSWR<ITissuType[]>({
   //   url: endpoints.tissuTypes.all,
   //   args: {}
@@ -67,37 +74,26 @@ const TissuSelector = (props: TextFieldProps, ref: ForwardedRef<HTMLDivElement>)
     }
   ]
 
-  return tissus ? <FormControl sx={fullWidth ? { width: '100%' } : { minWidth: 300 }}
+  return tissus ? <FormControl sx={{ width: '100%' }} size="small"
   >
-    <Autocomplete
-      size="small"
-      ref={ref}
-      onChange={(event: React.SyntheticEvent<Element, Event>, newValue: any) => {
-        (props?.onChange && newValue) && props?.onChange(newValue);
-      }}
-      defaultValue={value as ITissu}
-      id="tissu-types-selector"
-      options={tissus}
-      autoHighlight
-      disabled={props.disabled}
-      getOptionLabel={(option: any) => option.name ? option.name : ''}
-      renderOption={(props, option: any) => (
-        <Box component="li" {...props}>
-          <span style={{ marginLeft: 10 }}>{option.name}</span>
-        </Box>
-      )}
-      renderInput={(params) => (
-        <TextField
-          variant="outlined"
-          {...params}
-          label={"Rechercher un tissu"}
-          inputProps={{
-            ...params.inputProps,
-          }}
-          {...props}
-        />
-      )}
-    />
+    <InputLabel id="tissu-selector">Rechercher un tissu</InputLabel>
+
+    <Select
+      labelId="tissu-selector"
+      id="tissu-selector"
+      value={value}
+      label="Rechercher un tissu"
+      onChange={onChange}
+    >
+      <MenuItem value={''}></MenuItem>
+      {tissus.map((tissu) => {
+        return (
+          <MenuItem value={tissu.name}>{tissu.name}</MenuItem>
+        )
+      })}
+
+    </Select>
+
   </FormControl> : <></>
 
 }
