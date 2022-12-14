@@ -1,3 +1,5 @@
+import ITissuType from "./tissus-type.interface"
+
 export default interface ITissu {
     id: number
     name: string
@@ -15,4 +17,5 @@ export default interface ITissu {
     comment?: string
     user_id?: number
     tissu_type_id?: number
+    tissu_type: ITissuType
   }
