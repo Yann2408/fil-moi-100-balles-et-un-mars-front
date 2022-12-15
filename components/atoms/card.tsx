@@ -3,7 +3,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const CardContentNoPadding = styled(CardContent)`
-backgroundColor: 'purple'
   padding: 0;
   &:last-child {
     padding: 0;
@@ -21,12 +20,12 @@ const NormalCard = (props: NormalCardProps): JSX.Element => {
     const { children, clickable = false, onClick } = props
 
     return (
-        <Card sx={{mt: 3}}>
+        <Card sx={{mt: 3,  height:120 }}>
             <CardContentNoPadding >
-                <Stack sx={{ display: 'flex', flexDirection: 'row' }}>
+                <Stack sx={{ display: 'flex', flexDirection: 'row',  }}>
                     <CardMedia
                         component='img'
-                        height='100'
+                        height='100%'
                         sx={{ width: '45%' }}
                         image='https://source.unsplash.com/random'
                         alt="tissu picture"
@@ -38,13 +37,12 @@ const NormalCard = (props: NormalCardProps): JSX.Element => {
                         {/* <Stack alignItems="flex-end" bgcolor={"blue"} width="100%" ml={1}> */}
                         <Stack alignItems="flex-end"  width="100%" ml={1}>
                             <Stack sx={{ display: 'flex', flexDirection: 'row' }} justifyContent="space-between">
-                                <Stack>Rating</Stack>
-                                <Stack>
+                                {/* <Stack>
                                 <IconButton >
                                     <DeleteIcon fontSize="medium" />
                                 </IconButton>
 
-                                </Stack>
+                                </Stack> */}
                             </Stack>
                         </Stack>
                     </Stack>
