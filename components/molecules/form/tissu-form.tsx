@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, InputAdornment, Radio, RadioGroup, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Rating, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
 import { Controller, FieldError, useForm } from "react-hook-form";
 import endpoints from "../../../endpoints"
 import useApi from "../../../hooks/api"
@@ -19,10 +19,10 @@ interface FormProps {
     id: number | undefined
     name: string
     tissu_type: ITissuType | undefined
-    weight: number
-    laize: number
-    price: number
-    stock: number
+    weight: number | undefined
+    laize: number | undefined
+    price: number | undefined
+    stock: number | undefined
     by_on: string
     scrap: boolean
     pre_wash: boolean
@@ -40,14 +40,16 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
     const [loading, setLoading] = useState<boolean>(false)
 
+    const [ratingValue, setRatingValue] = useState<number | null>(null);
+
     const [defaultValues, setDefaultValues] = useState<FormProps>({
         id: undefined,
         name: '',
         tissu_type: undefined,
-        weight: 0,
-        laize: 0,
-        price: 0,
-        stock: 0,
+        weight: undefined,
+        laize: undefined,
+        price: undefined,
+        stock: undefined,
         by_on: '',
         scrap: false,
         pre_wash: false,
@@ -189,10 +191,204 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             label="Poids"
                             variant="outlined"
                             InputProps={{
-                                endAdornment:<InputAdornment position="end">g/m2</InputAdornment>
+                                endAdornment: <InputAdornment position="end">g/m2</InputAdornment>
                             }}
                             error={errors?.weight?.message ? true : false}
                             helperText={errors?.weight?.message}
+                            fullWidth
+                            {...field}
+                        />}
+                />
+            </Stack>
+
+            <Stack mt={3}>
+                <Controller
+                    name="laize"
+                    control={control}
+                    render={({ field }) =>
+                        <TextField
+                            size="small"
+                            type="text"
+                            label="Laize"
+                            variant="outlined"
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">cm</InputAdornment>
+                            }}
+                            error={errors?.laize?.message ? true : false}
+                            helperText={errors?.laize?.message}
+                            fullWidth
+                            {...field}
+                        />}
+                />
+            </Stack>
+
+            <Stack mt={3}>
+                <Controller
+                    name="price"
+                    control={control}
+                    render={({ field }) =>
+                        <TextField
+                            size="small"
+                            type="text"
+                            label="Prix"
+                            variant="outlined"
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">€/m</InputAdornment>
+                            }}
+                            error={errors?.price?.message ? true : false}
+                            helperText={errors?.price?.message}
+                            fullWidth
+                            {...field}
+                        />}
+                />
+            </Stack>
+
+            <Stack mt={3}>
+                <Controller
+                    name="stock"
+                    control={control}
+                    render={({ field }) =>
+                        <TextField
+                            size="small"
+                            type="text"
+                            label="Stock"
+                            variant="outlined"
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">m</InputAdornment>
+                            }}
+                            error={errors?.stock?.message ? true : false}
+                            helperText={errors?.stock?.message}
+                            fullWidth
+                            {...field}
+                        />}
+                />
+            </Stack>
+
+            <Stack mt={3}>
+                <Controller
+                    name="by_on"
+                    control={control}
+                    render={({ field }) =>
+                        <TextField
+                            size="small"
+                            type="text"
+                            label="Acheté chez"
+                            variant="outlined"
+                            error={errors?.by_on?.message ? true : false}
+                            helperText={errors?.by_on?.message}
+                            fullWidth
+                            {...field}
+                        />}
+                />
+            </Stack>
+
+            <Stack mt={3} >
+                <Grid container spacing={0} direction="row" justifyContent="space-between">
+                    <Grid item xs={4}>
+                        <FormControlLabel
+                            control={
+                                <Controller
+                                    name="scrap"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            checked={field.value}
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            }
+                            label="Scrap"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormControlLabel
+                            control={
+                                <Controller
+                                    name="oekotex"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            checked={field.value}
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            }
+                            label="Oekotex"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <FormControlLabel
+                            control={
+                                <Controller
+                                    name="bio"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            checked={field.value}
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            }
+                            label="Bio"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <FormControlLabel
+                            control={
+                                <Controller
+                                    name="pre_wash"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Checkbox
+                                            checked={field.value}
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            }
+                            label="Pre-Wash"
+                            labelPlacement="start"
+                        />
+                    </Grid>
+                </Grid>
+            </Stack>
+
+            <Stack sx={{ mt:2, '& > legend': { mt: 0 }}} flexDirection= 'row' alignItems= "center">
+
+            <Typography sx={{ mr:1 }} component="legend">Note</Typography>
+            <Rating
+                name="rating"
+                precision={0.5}
+                defaultValue={defaultValues.rating}
+                value={ratingValue}
+                onChange={(event, newValue) => {
+                    setRatingValue(newValue);
+                }}
+            />
+            </Stack>
+
+            <Stack mt={3}>
+                <Controller
+                    name="comment"
+                    control={control}
+                    render={({ field }) =>
+                        <TextField
+                            size="small"
+                            type="text"
+                            multiline
+                            rows={4}
+                            label="Commentaire"
+                            variant="outlined"
+                            error={errors?.stock?.message ? true : false}
+                            helperText={errors?.stock?.message}
                             fullWidth
                             {...field}
                         />}
