@@ -5,6 +5,8 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Navbar from '../../components/organisms/navbar'
 import TissuForm from '../../components/molecules/form/tissu-form'
+import { useEffect, useState } from 'react'
+import { boolean } from 'yup'
 const AdvertisersStore: NextPage = () => {
 
   const router = useRouter()
@@ -22,7 +24,7 @@ const AdvertisersStore: NextPage = () => {
             <Card>
             <Box padding={{ xs: 1, sm: 3, md: 5 }}>
                 <Typography component="h3" variant="h3" padding={0} sx={{ display: 'flex', justifyContent:'center'}}>
-                    {isId ? "Nouveau tissu" : "Mettre à jour"}
+                    {isId === false ? "Nouveau tissu" : "Mettre à jour"}
                 </Typography>
                 {/* <OFormAdvertiser key={JSON.stringify(advertiserId)} id={isId ? Number(advertiserId) : undefined} /> */}
                 <TissuForm/>
