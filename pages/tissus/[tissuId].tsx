@@ -27,7 +27,7 @@ const AdvertisersStore: NextPage = () => {
                     {isId === false ? "Nouveau tissu" : "Mettre à jour"}
                 </Typography>
                 {/* <OFormAdvertiser key={JSON.stringify(advertiserId)} id={isId ? Number(advertiserId) : undefined} /> */}
-                <TissuForm/>
+                <TissuForm key={JSON.stringify(tissuId)} id={isId ? Number(tissuId) : undefined}/>
             </Box>
             </Card>
         </Stack>

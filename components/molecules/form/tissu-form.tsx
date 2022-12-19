@@ -10,6 +10,7 @@ import ITissuType from "../../../interfaces/tissus-type.interface";
 import { useEffect, useState } from "react";
 import ITissu from "../../../interfaces/tissus.interface";
 import TissuTypeSelector from "../selector/tissu-type-selector";
+import FormConfirm from "../../atoms/form-confirm";
 
 interface TissuFormProps {
     id?: number
@@ -39,6 +40,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     const router = useRouter()
 
     const [loading, setLoading] = useState<boolean>(false)
+    const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
     const [ratingValue, setRatingValue] = useState<number | null>(null);
 
@@ -55,16 +57,14 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         pre_wash: false,
         oekotex: false,
         bio: false,
-        rating: 0,
+        rating: 1,
         comment: ''
     })
 
     const { data: tissu, mutate } = useSWR<ITissu>({
         url: id && endpoints.tissus.get(id),
         args: {
-            data: {
-                filters: { id: id },
-            }
+              id: id ,          
         }
     }, fetcher)
 
@@ -143,6 +143,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
             reset(defaultValues)
         }
     }, [defaultValues, reset])
+
+    console.log(defaultValues)
 
     return (
 
@@ -232,6 +234,9 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             type="text"
                             label="Prix"
                             variant="outlined"
+                            InputLabelProps={{
+                                shrink: true,
+                              }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">€/m</InputAdornment>
                             }}
@@ -361,18 +366,18 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                 </Grid>
             </Stack>
 
-            <Stack sx={{ mt:2, '& > legend': { mt: 0 }}} flexDirection= 'row' alignItems= "center">
+            <Stack sx={{ mt: 2, '& > legend': { mt: 0 } }} flexDirection='row' alignItems="center">
 
-            <Typography sx={{ mr:1 }} component="legend">Note</Typography>
-            <Rating
-                name="rating"
-                precision={0.5}
-                defaultValue={defaultValues.rating}
-                value={ratingValue}
-                onChange={(event, newValue) => {
-                    setRatingValue(newValue);
-                }}
-            />
+                <Typography sx={{ mr: 1 }} component="legend">Note</Typography>
+                <Rating
+                    name="rating"
+                    precision={0.5}
+                    defaultValue={defaultValues.rating}
+                    value={ratingValue}
+                    onChange={(event, newValue) => {
+                        setRatingValue(newValue);
+                    }}
+                />
             </Stack>
 
             <Stack mt={3}>
@@ -394,6 +399,22 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                         />}
                 />
             </Stack>
+
+            {defaultValues.id !== undefined ? <>
+                <Button variant="contained" color="error" size="small" onClick={() => setDeleteModalOpen(true)}>
+                    Supprimer
+                </Button>
+
+                <FormConfirm
+                    title="Supprimer le tissu ?"
+                    text="Voulez vous vraiment supprimer le tissu"
+                    action={() => onDelete()}
+                    open={deleteModalOpen}
+                    loading={loading}
+                    ctaColor="error"
+                    setOpen={setDeleteModalOpen}
+                />
+            </> : <div />}
 
         </Box>
 
