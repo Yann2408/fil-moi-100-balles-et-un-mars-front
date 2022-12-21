@@ -1,7 +1,18 @@
-import { AlertColor, Box, Button, Modal, Stack } from '@mui/material';
+import { AlertColor, Box, Button, Modal, Stack, Typography } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react'
 
 import LoadingButton from '@mui/lab/LoadingButton';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+  width: '90%'
+};
 
 interface IOFormCommonConfirmProps {
   title: string
@@ -22,7 +33,6 @@ const FormConfirm = (props: IOFormCommonConfirmProps): JSX.Element => {
     if (reason && reason == "backdropClick") {
       return
     }
-
     setOpen(false)
   }
 
@@ -30,7 +40,13 @@ const FormConfirm = (props: IOFormCommonConfirmProps): JSX.Element => {
 
     <Modal open={open} onClose={handleClose}>
 
-      <Box sx={{ mt: 1 }}>
+      <Box sx={{ ...style, mt: 1 }}>
+        <Typography variant='h5'>
+          {title}
+        </Typography>
+        <Typography marginTop={2} >
+          {text}
+        </Typography>
 
         <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="flex-end" spacing={2} marginTop={5}>
           <Button variant="outlined" color={ctaColor} size="medium" onClick={() => setOpen(false)}>

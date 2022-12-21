@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import ITissu from "../../../interfaces/tissus.interface";
 import TissuTypeSelector from "../selector/tissu-type-selector";
 import FormConfirm from "../../atoms/form-confirm";
+import { LoadingButton } from "@mui/lab";
 
 interface TissuFormProps {
     id?: number
@@ -19,13 +20,12 @@ interface TissuFormProps {
 interface FormProps {
     id: number | undefined
     name: string
-    tissu_type: ITissuType | undefined
+    tissu_type: string | undefined
     weight: number | undefined
     laize: number | undefined
     price: number | undefined
     stock: number | undefined
     by_on: string
-    scrap: boolean
     pre_wash: boolean
     oekotex: boolean
     bio: boolean
@@ -42,18 +42,18 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     const [loading, setLoading] = useState<boolean>(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
-    const [ratingValue, setRatingValue] = useState<number | null>(null);
+    const [tissuTypeValue, setTissuTypeValue] = useState<string>()
+    const [ratingValue, setRatingValue] = useState<number | null>();
 
     const [defaultValues, setDefaultValues] = useState<FormProps>({
         id: undefined,
         name: '',
-        tissu_type: undefined,
+        tissu_type: '',
         weight: undefined,
         laize: undefined,
         price: undefined,
         stock: undefined,
         by_on: '',
-        scrap: false,
         pre_wash: false,
         oekotex: false,
         bio: false,
@@ -64,7 +64,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     const { data: tissu, mutate } = useSWR<ITissu>({
         url: id && endpoints.tissus.get(id),
         args: {
-              id: id ,          
+            id: id,
         }
     }, fetcher)
 
@@ -73,13 +73,12 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         setDefaultValues({
             id: tissu.id,
             name: tissu.name,
-            tissu_type: tissu.tissu_type,
+            tissu_type: tissu.tissu_type.name,
             weight: tissu.weight,
             laize: tissu.laize,
             price: tissu.price,
             stock: tissu.stock,
             by_on: tissu.by_on,
-            scrap: tissu.scrap,
             pre_wash: tissu.pre_wash,
             oekotex: tissu.oekotex,
             bio: tissu.bio,
@@ -91,8 +90,18 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     useEffect(() => {
         if (tissu) {
             setDefaultTissu(tissu)
+            setTissuTypeValue(tissu.tissu_type.name)
+            setRatingValue(tissu.rating)
         }
     }, [tissu]);
+
+    // useEffect(() => {
+    //     if (defaultValues) {
+    //         setTissuTypeValue(defaultValues.tissu_type)
+    //         setRatingValue(defaultValues.rating)
+    //         console.log(123)
+    //     }
+    // }, [defaultValues]);
 
 
 
@@ -101,13 +110,15 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         defaultValues
     });
 
-    const [tissuTypeValue, setTissuTypeValue] = useState<string>('')
+
 
     const handleTissuTypeChange = (event: SelectChangeEvent) => {
         setTissuTypeValue(event.target.value as string);
     };
 
     const onSubmit = (args: FormProps) => {
+        args.rating = ratingValue ? ratingValue : defaultValues.rating
+        args.tissu_type = tissuTypeValue ? tissuTypeValue : defaultValues.tissu_type
         clearErrors()
         request({
             method: 'post',
@@ -118,7 +129,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
             //   setAlert,
             callback: () => {
                 mutate()
-                router.replace('/tissus/list')
+                // router.replace('/tissus/list')
             }
         })
     }
@@ -144,7 +155,10 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         }
     }, [defaultValues, reset])
 
-    console.log(defaultValues)
+    console.log(defaultValues, "defaultValues")
+    // console.log(defaultValues.rating, "defaultValues.rating")
+    // console.log(ratingValue, "ratingValue")
+    console.log(tissuTypeValue, "tissuTypeValue")
 
     return (
 
@@ -160,6 +174,9 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             type="text"
                             label="Nom du tissu"
                             variant="outlined"
+                            InputLabelProps={{
+                                shrink: defaultValues.id ? true : false
+                            }}
                             error={errors?.name?.message ? true : false}
                             helperText={errors?.name?.message}
                             fullWidth
@@ -168,19 +185,20 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                 />
             </Stack>
 
-            <Stack mt={3}>
+            {defaultValues.tissu_type !== '' ? <Stack mt={3}>
                 <Controller
                     name="tissu_type"
                     control={control}
                     render={({ field }) =>
                         <TissuTypeSelector
+                            {...field}
                             value={tissuTypeValue}
                             onChange={handleTissuTypeChange}
                             size="small"
                         />
                     }
                 />
-            </Stack>
+            </Stack> : undefined}
 
             <Stack mt={3}>
                 <Controller
@@ -192,6 +210,9 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             type="text"
                             label="Poids"
                             variant="outlined"
+                            InputLabelProps={{
+                                shrink: defaultValues.id ? true : false
+                            }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">g/m2</InputAdornment>
                             }}
@@ -213,6 +234,9 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             type="text"
                             label="Laize"
                             variant="outlined"
+                            InputLabelProps={{
+                                shrink: defaultValues.id ? true : false
+                            }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">cm</InputAdornment>
                             }}
@@ -235,8 +259,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             label="Prix"
                             variant="outlined"
                             InputLabelProps={{
-                                shrink: true,
-                              }}
+                                shrink: defaultValues.id ? true : false
+                            }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">€/m</InputAdornment>
                             }}
@@ -258,6 +282,9 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             type="text"
                             label="Stock"
                             variant="outlined"
+                            InputLabelProps={{
+                                shrink: defaultValues.id ? true : false
+                            }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">m</InputAdornment>
                             }}
@@ -279,6 +306,9 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             type="text"
                             label="Acheté chez"
                             variant="outlined"
+                            InputLabelProps={{
+                                shrink: defaultValues.id ? true : false
+                            }}
                             error={errors?.by_on?.message ? true : false}
                             helperText={errors?.by_on?.message}
                             fullWidth
@@ -289,24 +319,6 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
             <Stack mt={3} >
                 <Grid container spacing={0} direction="row" justifyContent="space-between">
-                    <Grid item xs={4}>
-                        <FormControlLabel
-                            control={
-                                <Controller
-                                    name="scrap"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Checkbox
-                                            checked={field.value}
-                                            {...field}
-                                        />
-                                    )}
-                                />
-                            }
-                            label="Scrap"
-                            labelPlacement="start"
-                        />
-                    </Grid>
                     <Grid item xs={4}>
                         <FormControlLabel
                             control={
@@ -366,19 +378,24 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                 </Grid>
             </Stack>
 
-            <Stack sx={{ mt: 2, '& > legend': { mt: 0 } }} flexDirection='row' alignItems="center">
+            {ratingValue !== undefined ? <Stack sx={{ mt: 2, '& > legend': { mt: 0 } }} flexDirection='row' alignItems="center">
 
                 <Typography sx={{ mr: 1 }} component="legend">Note</Typography>
-                <Rating
-                    name="rating"
-                    precision={0.5}
-                    defaultValue={defaultValues.rating}
-                    value={ratingValue}
-                    onChange={(event, newValue) => {
-                        setRatingValue(newValue);
-                    }}
+                <FormControlLabel
+                    control={
+                        <Rating
+                            name="rating"
+                            precision={0.5}
+                            // defaultValue={defaultValues.rating}
+                            value={ratingValue}
+                            onChange={(event, newValue) => {
+                                setRatingValue(newValue);
+                            }}
+                        />
+                    }
+                    label=""
                 />
-            </Stack>
+            </Stack> : undefined}
 
             <Stack mt={3}>
                 <Controller
@@ -400,21 +417,35 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                 />
             </Stack>
 
-            {defaultValues.id !== undefined ? <>
-                <Button variant="contained" color="error" size="small" onClick={() => setDeleteModalOpen(true)}>
-                    Supprimer
+            <Stack direction='row' spacing={2} mt={2} justifyContent='space-between'>
+                {defaultValues.id !== undefined ? <>
+                    <Button variant="outlined" color="error" size="small" onClick={() => setDeleteModalOpen(true)}>
+                        Supprimer
+                    </Button>
+
+                    <FormConfirm
+                        title="Supprimer le tissu ?"
+                        action={() => onDelete()}
+                        open={deleteModalOpen}
+                        loading={loading}
+                        ctaColor="error"
+                        setOpen={setDeleteModalOpen}
+                    />
+                </> : <div />}
+
+                <Button variant="outlined" size="medium" onClick={() => reset(defaultValues)}>
+                    Reset
                 </Button>
 
-                <FormConfirm
-                    title="Supprimer le tissu ?"
-                    text="Voulez vous vraiment supprimer le tissu"
-                    action={() => onDelete()}
-                    open={deleteModalOpen}
+                <LoadingButton
+                    type="submit"
+                    variant="outlined"
                     loading={loading}
-                    ctaColor="error"
-                    setOpen={setDeleteModalOpen}
-                />
-            </> : <div />}
+                // disabled={!isDirty}
+                >
+                    Valider
+                </LoadingButton>
+            </Stack>
 
         </Box>
 
