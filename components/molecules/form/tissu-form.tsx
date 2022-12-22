@@ -43,7 +43,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
     const [tissuTypeValue, setTissuTypeValue] = useState<string>()
-    const [ratingValue, setRatingValue] = useState<number | null>();
+    const [ratingValue, setRatingValue] = useState<number | null>(0);
 
     const [defaultValues, setDefaultValues] = useState<FormProps>({
         id: undefined,
@@ -96,7 +96,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     }, [tissu]);
 
     // useEffect(() => {
-    //     if (defaultValues) {
+    //     if ((defaultValues.tissu_type !== tissuTypeValue || defaultValues.rating !== ratingValue) ) {
     //         setTissuTypeValue(defaultValues.tissu_type)
     //         setRatingValue(defaultValues.rating)
     //         console.log(123)
@@ -155,7 +155,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         }
     }, [defaultValues, reset])
 
-    console.log(defaultValues, "defaultValues")
+    // console.log(defaultValues, "defaultValues")
     // console.log(defaultValues.rating, "defaultValues.rating")
     // console.log(ratingValue, "ratingValue")
     console.log(tissuTypeValue, "tissuTypeValue")
@@ -378,7 +378,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                 </Grid>
             </Stack>
 
-            {ratingValue !== undefined ? <Stack sx={{ mt: 2, '& > legend': { mt: 0 } }} flexDirection='row' alignItems="center">
+            <Stack sx={{ mt: 2, '& > legend': { mt: 0 } }} flexDirection='row' alignItems="center">
 
                 <Typography sx={{ mr: 1 }} component="legend">Note</Typography>
                 <FormControlLabel
@@ -395,7 +395,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                     }
                     label=""
                 />
-            </Stack> : undefined}
+            </Stack>
 
             <Stack mt={3}>
                 <Controller
