@@ -1,12 +1,11 @@
 import * as yup from "yup";
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Rating, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
-import { Controller, FieldError, useForm } from "react-hook-form";
+import { Box, Button, Checkbox, FormControlLabel, Grid, InputAdornment, Rating, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material';
+import { Controller, useForm } from "react-hook-form";
 import endpoints from "../../../endpoints"
 import useApi from "../../../hooks/api"
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { yupResolver } from '@hookform/resolvers/yup';
-import ITissuType from "../../../interfaces/tissus-type.interface";
 import { useEffect, useState } from "react";
 import ITissu from "../../../interfaces/tissus.interface";
 import TissuTypeSelector from "../selector/tissu-type-selector";
@@ -44,6 +43,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
     const [tissuTypeValue, setTissuTypeValue] = useState<string>()
     const [ratingValue, setRatingValue] = useState<number | null>(0);
+
+    const [modalTitle, setModalTitle] = useState<string>('')
 
     const [defaultValues, setDefaultValues] = useState<FormProps>({
         id: undefined,
@@ -95,18 +96,23 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         }
     }, [tissu]);
 
-    // useEffect(() => {
-    //     if ((defaultValues.tissu_type !== tissuTypeValue || defaultValues.rating !== ratingValue) ) {
-    //         setTissuTypeValue(defaultValues.tissu_type)
-    //         setRatingValue(defaultValues.rating)
-    //         console.log(123)
-    //     }
-    // }, [defaultValues]);
-
-
+    const schema = yup.object({
+        name: yup.string().required('Ce champ est obligatoire'),
+        tissu_type: yup.string().required('Ce champ est obligatoire'),
+        weight: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
+        laize: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
+        price: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
+        stock: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
+        by_on: yup.string().required('Ce champ est obligatoire'),
+        pre_wash: yup.boolean().required('Ce champ est obligatoire'),
+        oekotex: yup.boolean().required('Ce champ est obligatoire'),
+        bio: yup.boolean().required('Ce champ est obligatoire'),
+        rating: yup.boolean().required('Ce champ est obligatoire'),
+        comment: yup.string(),
+    })
 
     const { control, handleSubmit, setError, reset, clearErrors, register, formState: { errors, isDirty } } = useForm<FormProps>({
-        // resolver: yupResolver(schema),
+        resolver: yupResolver(schema),
         defaultValues
     });
 
@@ -134,6 +140,16 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         })
     }
 
+    const onDeleteAction = () => {
+        setModalTitle("delete")
+        setDeleteModalOpen(true)
+    }
+
+    const onResetAction = () => {
+        setModalTitle("reset")
+        setDeleteModalOpen(true)
+    }
+
     const onDelete = () => {
         clearErrors()
         request({
@@ -149,16 +165,18 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         })
     }
 
+    const onReset = () => {
+        reset(defaultValues)
+        setTissuTypeValue(defaultValues.tissu_type)
+        setRatingValue(defaultValues.rating)
+        setDeleteModalOpen(false)
+    }
+
     useEffect(() => {
         if (defaultValues && reset) {
             reset(defaultValues)
         }
     }, [defaultValues, reset])
-
-    // console.log(defaultValues, "defaultValues")
-    // console.log(defaultValues.rating, "defaultValues.rating")
-    // console.log(ratingValue, "ratingValue")
-    console.log(tissuTypeValue, "tissuTypeValue")
 
     return (
 
@@ -419,13 +437,13 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
             <Stack direction='row' spacing={2} mt={2} justifyContent='space-between'>
                 {defaultValues.id !== undefined ? <>
-                    <Button variant="outlined" color="error" size="small" onClick={() => setDeleteModalOpen(true)}>
+                    <Button variant="outlined" color="error" size="small" onClick={() => onDeleteAction()}>
                         Supprimer
                     </Button>
 
                     <FormConfirm
-                        title="Supprimer le tissu ?"
-                        action={() => onDelete()}
+                        title={modalTitle === "delete" ? "Supprimer le tissu ?" : "Annuler les changements ?"}
+                        action={modalTitle === "delete" ? () => onDelete() : () => onReset()}
                         open={deleteModalOpen}
                         loading={loading}
                         ctaColor="error"
@@ -433,7 +451,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                     />
                 </> : <div />}
 
-                <Button variant="outlined" size="medium" onClick={() => reset(defaultValues)}>
+                <Button variant="outlined" size="medium" onClick={() => onResetAction()}>
                     Reset
                 </Button>
 

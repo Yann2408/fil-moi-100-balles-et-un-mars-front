@@ -50,7 +50,7 @@ const FormConfirm = (props: IOFormCommonConfirmProps): JSX.Element => {
 
         <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="flex-end" spacing={2} marginTop={5}>
           <Button variant="outlined" color={ctaColor} size="medium" onClick={() => setOpen(false)}>
-            Annuler
+            Non
           </Button>
           <LoadingButton
             type="submit"
@@ -59,7 +59,7 @@ const FormConfirm = (props: IOFormCommonConfirmProps): JSX.Element => {
             loading={loading}
             onClick={() => action()}
           >
-            Confimer
+            Oui
           </LoadingButton>
         </Stack>
       </Box>
