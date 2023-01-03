@@ -39,7 +39,7 @@ const TissuTypeSelector = (props: TissuTypeSelectorProps,): JSX.Element => {
     return (tissuTypes ?
 
         <FormControl fullWidth size={size}>
-            <InputLabel id="Type-de-tissu-label">Type de tissu</InputLabel>
+            <InputLabel id="Type-de-tissu-label" >Type de tissu</InputLabel>
             <Select
                 labelId="Type-de-tissu-label"
                 id="Type-de-tissu-select"

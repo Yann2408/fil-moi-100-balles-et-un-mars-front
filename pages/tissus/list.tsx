@@ -18,6 +18,7 @@ const TissusList: NextPage = () => {
 
     const { fetcher } = useApi()
 
+    // console.log(user.id, "user")
     const [tissuValue, setTissuValue] = useState<string | undefined>('')
     const [tissuTypesValue, setTissuTypesValue] = useState<string[] | undefined>([]);
 
@@ -28,6 +29,7 @@ const TissusList: NextPage = () => {
         args: {
         }
     }, fetcher)
+
 
     useEffect(() => {
         if (tissus && tissuTypesValue !== undefined) {

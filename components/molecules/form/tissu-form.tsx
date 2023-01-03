@@ -11,6 +11,7 @@ import ITissu from "../../../interfaces/tissus.interface";
 import TissuTypeSelector from "../selector/tissu-type-selector";
 import FormConfirm from "../../atoms/form-confirm";
 import { LoadingButton } from "@mui/lab";
+import { errorMessages } from "../../../hooks/utils";
 
 interface TissuFormProps {
     id?: number
@@ -19,6 +20,7 @@ interface TissuFormProps {
 interface FormProps {
     id: number | undefined
     name: string
+    new_tissu_type: string | undefined
     tissu_type: string | undefined
     weight: number | undefined
     laize: number | undefined
@@ -30,18 +32,20 @@ interface FormProps {
     bio: boolean
     rating: number
     comment?: string | undefined
+    // user_id: number
 }
 
 const TissuForm = (props: TissuFormProps): JSX.Element => {
 
     const { id } = props
-    const { fetcher, request } = useApi()
+    const { fetcher, request, user } = useApi()
     const router = useRouter()
 
     const [loading, setLoading] = useState<boolean>(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
     const [tissuTypeValue, setTissuTypeValue] = useState<string>()
+    const [newTissuTypeValue, setNewTissuTypeValue] = useState<string>()
     const [ratingValue, setRatingValue] = useState<number | null>(0);
 
     const [modalTitle, setModalTitle] = useState<string>('')
@@ -49,6 +53,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     const [defaultValues, setDefaultValues] = useState<FormProps>({
         id: undefined,
         name: '',
+        new_tissu_type: '',
         tissu_type: '',
         weight: undefined,
         laize: undefined,
@@ -59,7 +64,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         oekotex: false,
         bio: false,
         rating: 1,
-        comment: ''
+        comment: '',
+        // user_id: user.id
     })
 
     const { data: tissu, mutate } = useSWR<ITissu>({
@@ -69,11 +75,11 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         }
     }, fetcher)
 
-
     const setDefaultTissu = (tissu: ITissu) => {
         setDefaultValues({
             id: tissu.id,
             name: tissu.name,
+            new_tissu_type: '',
             tissu_type: tissu.tissu_type.name,
             weight: tissu.weight,
             laize: tissu.laize,
@@ -84,7 +90,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
             oekotex: tissu.oekotex,
             bio: tissu.bio,
             rating: tissu.rating,
-            comment: tissu.comment
+            comment: tissu.comment,
+            // user_id: user.id
         })
     }
 
@@ -96,19 +103,22 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         }
     }, [tissu]);
 
+    console.log(tissu, "tissu")
+
     const schema = yup.object({
-        name: yup.string().required('Ce champ est obligatoire'),
-        tissu_type: yup.string().required('Ce champ est obligatoire'),
-        weight: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
-        laize: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
-        price: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
-        stock: yup.number().typeError('Ce champ est obligatoire').positive('Doit être un nombre positif').required('Ce champ est obligatoire'),
-        by_on: yup.string().required('Ce champ est obligatoire'),
-        pre_wash: yup.boolean().required('Ce champ est obligatoire'),
-        oekotex: yup.boolean().required('Ce champ est obligatoire'),
-        bio: yup.boolean().required('Ce champ est obligatoire'),
-        rating: yup.boolean().required('Ce champ est obligatoire'),
-        comment: yup.string(),
+        name: yup.string().required(errorMessages.required),
+        new_tissu_type: yup.string().nullable(),
+        tissu_type: yup.string().nullable(),
+        weight: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
+        laize: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
+        price: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
+        stock: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
+        by_on: yup.string().required(errorMessages.required),
+        pre_wash: yup.boolean().required(errorMessages.required),
+        oekotex: yup.boolean().required(errorMessages.required),
+        bio: yup.boolean().required(errorMessages.required),
+        rating: yup.number().required(errorMessages.required),
+        comment: yup.string().nullable(),
     })
 
     const { control, handleSubmit, setError, reset, clearErrors, register, formState: { errors, isDirty } } = useForm<FormProps>({
@@ -116,15 +126,18 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         defaultValues
     });
 
-
-
     const handleTissuTypeChange = (event: SelectChangeEvent) => {
         setTissuTypeValue(event.target.value as string);
+    };
+
+    const handleNewTissuTypeChange = (event: SelectChangeEvent) => {
+        setNewTissuTypeValue(event.target.value as string);
     };
 
     const onSubmit = (args: FormProps) => {
         args.rating = ratingValue ? ratingValue : defaultValues.rating
         args.tissu_type = tissuTypeValue ? tissuTypeValue : defaultValues.tissu_type
+        args.new_tissu_type = newTissuTypeValue ? newTissuTypeValue : defaultValues.new_tissu_type
         clearErrors()
         request({
             method: 'post',
@@ -135,7 +148,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
             //   setAlert,
             callback: () => {
                 mutate()
-                // router.replace('/tissus/list')
+                router.replace('/tissus/list')
             }
         })
     }
@@ -168,6 +181,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     const onReset = () => {
         reset(defaultValues)
         setTissuTypeValue(defaultValues.tissu_type)
+        setNewTissuTypeValue(defaultValues.new_tissu_type)
         setRatingValue(defaultValues.rating)
         setDeleteModalOpen(false)
     }
@@ -192,9 +206,6 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             type="text"
                             label="Nom du tissu"
                             variant="outlined"
-                            InputLabelProps={{
-                                shrink: defaultValues.id ? true : false
-                            }}
                             error={errors?.name?.message ? true : false}
                             helperText={errors?.name?.message}
                             fullWidth
@@ -218,6 +229,21 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                 />
             </Stack> : undefined}
 
+            {defaultValues.id === undefined ? <Stack mt={3}>
+                <Controller
+                    name="new_tissu_type"
+                    control={control}
+                    render={({ field }) =>
+                        <TissuTypeSelector
+                            {...field}
+                            value={newTissuTypeValue}
+                            onChange={handleNewTissuTypeChange}
+                            size="small"
+                        />
+                    }
+                />
+            </Stack> : undefined}
+
             <Stack mt={3}>
                 <Controller
                     name="weight"
@@ -229,7 +255,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             label="Poids"
                             variant="outlined"
                             InputLabelProps={{
-                                shrink: defaultValues.id ? true : false
+                                shrink: defaultValues.id ? true : undefined
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">g/m2</InputAdornment>
@@ -253,7 +279,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             label="Laize"
                             variant="outlined"
                             InputLabelProps={{
-                                shrink: defaultValues.id ? true : false
+                                shrink: defaultValues.id ? true : undefined
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">cm</InputAdornment>
@@ -277,7 +303,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             label="Prix"
                             variant="outlined"
                             InputLabelProps={{
-                                shrink: defaultValues.id ? true : false
+                                shrink: defaultValues.id ? true : undefined
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">€/m</InputAdornment>
@@ -301,7 +327,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             label="Stock"
                             variant="outlined"
                             InputLabelProps={{
-                                shrink: defaultValues.id ? true : false
+                                shrink: defaultValues.id ? true : undefined
                             }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">m</InputAdornment>
@@ -325,7 +351,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             label="Acheté chez"
                             variant="outlined"
                             InputLabelProps={{
-                                shrink: defaultValues.id ? true : false
+                                shrink: defaultValues.id ? true : undefined
                             }}
                             error={errors?.by_on?.message ? true : false}
                             helperText={errors?.by_on?.message}
@@ -337,7 +363,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
             <Stack mt={3} >
                 <Grid container spacing={0} direction="row" justifyContent="space-between">
-                    <Grid item xs={4}>
+                    <Grid item xs={4} >
                         <FormControlLabel
                             control={
                                 <Controller
@@ -434,6 +460,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                         />}
                 />
             </Stack>
+
+            <input name="user_id" type="hidden" value={user} />
 
             <Stack direction='row' spacing={2} mt={2} justifyContent='space-between'>
                 {defaultValues.id !== undefined ? <>
