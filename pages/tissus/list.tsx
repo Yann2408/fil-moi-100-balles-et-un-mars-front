@@ -106,7 +106,7 @@ const TissusList: NextPage = () => {
                                 </Stack>
                                 <Stack sx={{ width: '100%', pt:1 }} display='flex' flexDirection='row' justifyContent='space-around'>
                                     <Typography>{tissu.tissu_type.name}</Typography>
-                                    {tissu.stock > 0 ? <Typography color="success.main"> stock: {tissu.stock}</Typography > : <Typography color="error.main"> Epuisé</Typography>}
+                                    {tissu.stock > 0 ? <Typography color="success.main"> stock: {tissu.stock} m</Typography > : <Typography color="error.main"> Epuisé</Typography>}
                                 </Stack>
                             </Stack>
                         </NormalCard>

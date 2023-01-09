@@ -9,30 +9,30 @@ import { useEffect, useState } from 'react'
 import { boolean } from 'yup'
 const AdvertisersStore: NextPage = () => {
 
-  const router = useRouter()
+    const router = useRouter()
 
-  const { tissuId } = router.query
-  const isId = Number.isInteger(Number(tissuId)) && Number(tissuId) > 0
+    const { tissuId } = router.query
+    const isId = Number.isInteger(Number(tissuId)) && Number(tissuId) > 0
 
-  return (
-    <Container>
-        <Navbar />
-        <Head>
-            <title>Tissu</title>
-        </Head>
-        <Stack spacing={2}>
-            <Card>
-            <Box padding={{ xs: 1, sm: 3, md: 5 }}>
-                <Typography component="h3" variant="h3" padding={0} sx={{ display: 'flex', justifyContent:'center'}}>
-                    {isId === false ? "Nouveau tissu" : "Mettre à jour"}
-                </Typography>
-                {/* <OFormAdvertiser key={JSON.stringify(advertiserId)} id={isId ? Number(advertiserId) : undefined} /> */}
-                <TissuForm key={JSON.stringify(tissuId)} id={isId ? Number(tissuId) : undefined}/>
-            </Box>
-            </Card>
-        </Stack>
-    </Container>
-  )
+    return (
+
+        <Container>
+            <Navbar />
+            <Head>
+                <title>Tissu</title>
+            </Head>
+            <Stack spacing={2}>
+                <Card>
+                    <Box padding={{ xs: 1, sm: 3, md: 5 }}>
+                        <Typography component="h3" variant="h3" padding={0} sx={{ display: 'flex', justifyContent: 'center' }}>
+                            {isId === false ? "Nouveau tissu" : "Mettre à jour"}
+                        </Typography>
+                        <TissuForm key={JSON.stringify(tissuId)} id={isId ? Number(tissuId) : undefined} />
+                    </Box>
+                </Card>
+            </Stack>
+        </Container>
+    )
 }
 
 export default AdvertisersStore

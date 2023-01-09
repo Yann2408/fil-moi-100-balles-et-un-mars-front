@@ -12,6 +12,7 @@ import TissuTypeSelector from "../selector/tissu-type-selector";
 import FormConfirm from "../../atoms/form-confirm";
 import { LoadingButton } from "@mui/lab";
 import { errorMessages } from "../../../hooks/utils";
+import { display } from "@mui/system";
 
 interface TissuFormProps {
     id?: number
@@ -32,7 +33,7 @@ interface FormProps {
     bio: boolean
     rating: number
     comment?: string | undefined
-    // user_id: number
+    user_id: number | undefined
 }
 
 const TissuForm = (props: TissuFormProps): JSX.Element => {
@@ -47,6 +48,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
     const [tissuTypeValue, setTissuTypeValue] = useState<string>()
     const [newTissuTypeValue, setNewTissuTypeValue] = useState<string>()
     const [ratingValue, setRatingValue] = useState<number | null>(0);
+    const [userId, setUserId] = useState<number | undefined>();
 
     const [modalTitle, setModalTitle] = useState<string>('')
 
@@ -65,7 +67,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         bio: false,
         rating: 1,
         comment: '',
-        // user_id: user.id
+        user_id: undefined
     })
 
     const { data: tissu, mutate } = useSWR<ITissu>({
@@ -80,7 +82,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
             id: tissu.id,
             name: tissu.name,
             new_tissu_type: '',
-            tissu_type: tissu.tissu_type.name,
+            tissu_type: tissu?.tissu_type?.name ? tissu.tissu_type.name : undefined,
             weight: tissu.weight,
             laize: tissu.laize,
             price: tissu.price,
@@ -91,19 +93,38 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
             bio: tissu.bio,
             rating: tissu.rating,
             comment: tissu.comment,
-            // user_id: user.id
+            user_id: Number(user.id)
         })
     }
 
-    useEffect(() => {
-        if (tissu) {
-            setDefaultTissu(tissu)
-            setTissuTypeValue(tissu.tissu_type.name)
-            setRatingValue(tissu.rating)
-        }
-    }, [tissu]);
+    // useEffect(() => {
+    //     if (tissu) {
+    //         console.log(tissu, "tissu user id")
+    //         setDefaultTissu(tissu)
+    //         setTissuTypeValue(tissu.tissu_type.name)
+    //         setRatingValue(tissu.rating)
+    //         setUserId(user.id)
+    //     }
+    // }, [tissu]);
 
-    console.log(tissu, "tissu")
+    useEffect(() => {
+        if (user) {
+            setUserId(user.id)
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if(id && !tissu) {
+            console.log(1)            
+            router.push('/tissus/list')                
+        }else if (tissu) {
+                console.log(tissu, "tissu user id")
+                setDefaultTissu(tissu)
+                setTissuTypeValue(tissu?.tissu_type?.name)
+                setRatingValue(tissu.rating)
+                setUserId(user.id)
+        }
+    }, [id, tissu])
 
     const schema = yup.object({
         name: yup.string().required(errorMessages.required),
@@ -119,6 +140,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         bio: yup.boolean().required(errorMessages.required),
         rating: yup.number().required(errorMessages.required),
         comment: yup.string().nullable(),
+        user_id: yup.number().required('required')
     })
 
     const { control, handleSubmit, setError, reset, clearErrors, register, formState: { errors, isDirty } } = useForm<FormProps>({
@@ -134,10 +156,10 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         setNewTissuTypeValue(event.target.value as string);
     };
 
-    const onSubmit = (args: FormProps) => {
+    const onSubmit = (args: FormProps) => { 
         args.rating = ratingValue ? ratingValue : defaultValues.rating
         args.tissu_type = tissuTypeValue ? tissuTypeValue : defaultValues.tissu_type
-        args.new_tissu_type = newTissuTypeValue ? newTissuTypeValue : defaultValues.new_tissu_type
+        args.new_tissu_type = newTissuTypeValue ? newTissuTypeValue : defaultValues.new_tissu_type     
         clearErrors()
         request({
             method: 'post',
@@ -194,7 +216,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
     return (
 
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
 
             <Stack mt={2}>
                 <Controller
@@ -461,7 +483,7 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                 />
             </Stack>
 
-            <input name="user_id" type="hidden" value={user} />
+            <input type="hidden" value={Number(userId)} {...register("user_id")} />
 
             <Stack direction='row' spacing={2} mt={2} justifyContent='space-between'>
                 {defaultValues.id !== undefined ? <>
