@@ -97,15 +97,15 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         })
     }
 
-    // useEffect(() => {
-    //     if (tissu) {
-    //         console.log(tissu, "tissu user id")
-    //         setDefaultTissu(tissu)
-    //         setTissuTypeValue(tissu.tissu_type.name)
-    //         setRatingValue(tissu.rating)
-    //         setUserId(user.id)
-    //     }
-    // }, [tissu]);
+    useEffect(() => {
+        if (tissu) {
+            console.log(tissu, "tissu user id")
+            setDefaultTissu(tissu)
+            setTissuTypeValue(tissu.tissu_type.name)
+            setRatingValue(tissu.rating)
+            setUserId(user.id)
+        }
+    }, [tissu]);
 
     useEffect(() => {
         if (user) {
@@ -113,18 +113,18 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         }
     }, [user]);
 
-    useEffect(() => {
-        if(id && !tissu) {
-            console.log(1)            
-            router.push('/tissus/list')                
-        }else if (tissu) {
-                console.log(tissu, "tissu user id")
-                setDefaultTissu(tissu)
-                setTissuTypeValue(tissu?.tissu_type?.name)
-                setRatingValue(tissu.rating)
-                setUserId(user.id)
-        }
-    }, [id, tissu])
+    // useEffect(() => {
+    //     if(id && !tissu) {
+    //         console.log(1)            
+    //         router.push('/tissus/list')                
+    //     }else if (tissu) {
+    //             console.log(tissu, "tissu user id")
+    //             setDefaultTissu(tissu)
+    //             setTissuTypeValue(tissu?.tissu_type?.name)
+    //             setRatingValue(tissu.rating)
+    //             setUserId(user.id)
+    //     }
+    // }, [id, tissu])
 
     const schema = yup.object({
         name: yup.string().required(errorMessages.required),
@@ -452,7 +452,6 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                         <Rating
                             name="rating"
                             precision={0.5}
-                            // defaultValue={defaultValues.rating}
                             value={ratingValue}
                             onChange={(event, newValue) => {
                                 setRatingValue(newValue);
@@ -507,9 +506,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
                 <LoadingButton
                     type="submit"
-                    variant="outlined"
+                    variant="contained"
                     loading={loading}
-                // disabled={!isDirty}
                 >
                     Valider
                 </LoadingButton>

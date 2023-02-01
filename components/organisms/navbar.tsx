@@ -21,12 +21,16 @@ const Navbar = () => {
 
     const menuDrawer = [
         {
+            titre: "Acceuil",
+            link: '/'
+        },
+        {
             titre: "Projets",
             link: '/projects'
         },
         {
             titre: "Tissus",
-            link: '/tissus'
+            link: '/tissus/list'
         },
         {
             titre: "Pattrons",
