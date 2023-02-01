@@ -113,27 +113,14 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         }
     }, [user]);
 
-    // useEffect(() => {
-    //     if(id && !tissu) {
-    //         console.log(1)            
-    //         router.push('/tissus/list')                
-    //     }else if (tissu) {
-    //             console.log(tissu, "tissu user id")
-    //             setDefaultTissu(tissu)
-    //             setTissuTypeValue(tissu?.tissu_type?.name)
-    //             setRatingValue(tissu.rating)
-    //             setUserId(user.id)
-    //     }
-    // }, [id, tissu])
-
     const schema = yup.object({
         name: yup.string().required(errorMessages.required),
         new_tissu_type: yup.string().nullable(),
         tissu_type: yup.string().nullable(),
-        weight: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
-        laize: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
-        price: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
-        stock: yup.number().typeError(errorMessages.required).min( 0, errorMessages.positive).required(errorMessages.required),
+        weight: yup.number().typeError('Ce champ doit être un nombre').min( 0, "Ce champ ne peut pas être un nombre négatif").required(errorMessages.required),
+        laize: yup.number().typeError('Ce champ doit être un nombre').min( 0, "Ce champ ne peut pas être un nombre négatif").required(errorMessages.required),
+        price: yup.number().typeError('Ce champ doit être un nombre').min( 0, "Ce champ ne peut pas être un nombre négatif").required(errorMessages.required),
+        stock: yup.number().typeError('Ce champ doit être un nombre').min( 0, "Ce champ ne peut pas être un nombre négatif").required(errorMessages.required),
         by_on: yup.string().required(errorMessages.required),
         pre_wash: yup.boolean().required(errorMessages.required),
         oekotex: yup.boolean().required(errorMessages.required),
