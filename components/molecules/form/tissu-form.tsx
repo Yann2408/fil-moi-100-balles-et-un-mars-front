@@ -8,11 +8,10 @@ import useSWR from "swr";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from "react";
 import ITissu from "../../../interfaces/tissus.interface";
-import TissuTypeSelector from "../selector/tissu-type-selector";
+import TissuTypeSelector from "../selector/tissus/tissu-type-selector";
 import FormConfirm from "../../atoms/form-confirm";
 import { LoadingButton } from "@mui/lab";
 import { errorMessages } from "../../../hooks/utils";
-import { display } from "@mui/system";
 
 interface TissuFormProps {
     id?: number
@@ -503,6 +502,5 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         </Box>
 
     )
-
 }
 export default TissuForm

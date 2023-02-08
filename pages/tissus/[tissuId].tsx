@@ -5,8 +5,7 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Navbar from '../../components/organisms/navbar'
 import TissuForm from '../../components/molecules/form/tissu-form'
-import { useEffect, useState } from 'react'
-import { boolean } from 'yup'
+
 const AdvertisersStore: NextPage = () => {
 
     const router = useRouter()
@@ -34,5 +33,4 @@ const AdvertisersStore: NextPage = () => {
         </Container>
     )
 }
-
 export default AdvertisersStore
