@@ -6,12 +6,12 @@ import useSWR from "swr"
 import NormalCard from "../../components/atoms/card"
 import Loader from "../../components/atoms/loader"
 import Link from 'next/link'
-import TissuSelector from "../../components/molecules/selector/tissu-selector"
+import TissuSelector from "../../components/molecules/selector/tissus/tissu-selector"
 import Navbar from "../../components/organisms/navbar"
 import endpoints from "../../endpoints"
 import useApi from "../../hooks/api"
 import ITissu from "../../interfaces/tissus.interface"
-import MultiTissuTypeSelector from "../../components/molecules/selector/multi-tissu-type-selector"
+import MultiTissuTypeSelector from "../../components/molecules/selector/tissus/multi-tissu-type-selector"
 
 const TissusList: NextPage = () => {
 
@@ -96,14 +96,14 @@ const TissusList: NextPage = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <Link href={{ pathname: '/tissus/[id]', query: { id: tissu.id.toString() } }} passHref>
                                 <NormalCard>
-                                    <Stack sx={{ width: '100%', pt: 1 }} display='flex' flexDirection='column'>
-                                        <Stack sx={{ width: '100%' }} display='flex' alignItems='flex-end'>
+                                    <Stack sx={{ width: '100%', pt: 1 }} flexDirection='column'>
+                                        <Stack sx={{ width: '100%' }} alignItems='flex-end'>
                                             <Rating size="small" readOnly precision={0.5} value={tissu.rating} />
                                         </Stack>
-                                        <Stack sx={{ width: '100%', mt: 1 }} display='flex' alignItems='center'>
+                                        <Stack sx={{ width: '100%', mt: 1 }} alignItems='center'>
                                             <Typography variant="h6">{tissu.name}</Typography>
                                         </Stack>
-                                        <Stack sx={{ width: '100%', pt: 1 }} display='flex' flexDirection='row' justifyContent='space-around'>
+                                        <Stack sx={{ width: '100%', pt: 1 }} flexDirection='row' justifyContent='space-around'>
                                             <Typography>{tissu.tissu_type.name}</Typography>
                                             {tissu.stock > 0 ? <Typography color="success.main"> stock: {tissu.stock} m</Typography > : <Typography color="error.main"> Epuisé</Typography>}
                                         </Stack>

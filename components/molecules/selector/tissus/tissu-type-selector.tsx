@@ -1,9 +1,9 @@
 import { Box, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import endpoints from '../../../endpoints';
-import useApi from '../../../hooks/api';
-import ITissuType from '../../../interfaces/tissus-type.interface';
+import endpoints from '../../../../endpoints';
+import useApi from '../../../../hooks/api';
+import ITissuType from '../../../../interfaces/tissus-type.interface';
 
 interface TissuTypeSelectorProps {
     value: string | undefined

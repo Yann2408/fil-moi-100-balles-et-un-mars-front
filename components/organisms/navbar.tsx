@@ -33,8 +33,8 @@ const Navbar = () => {
             link: '/tissus/list'
         },
         {
-            titre: "Pattrons",
-            link: '/patterns'
+            titre: "Patrons",
+            link: '/patterns/list'
         },
         {
             titre: "Inspirations",

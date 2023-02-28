@@ -7,7 +7,13 @@ const endpoints = {
     },
     tissuTypes: {
         all: '/api/tissu-types',
-    }
+    },
+    patterns: {
+        all: '/api/patterns',
+        post: '/api/patterns',
+        delete: '/api/patterns',
+        get: (id: number) => `/api/patterns/${id.toString()}`,
+    },
 
 }
 

@@ -1,9 +1,9 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { ReactNode } from 'react';
 import useSWR from 'swr';
-import endpoints from '../../../endpoints';
-import useApi from '../../../hooks/api';
-import ITissu from '../../../interfaces/tissus.interface';
+import endpoints from '../../../../endpoints';
+import useApi from '../../../../hooks/api';
+import ITissu from '../../../../interfaces/tissus.interface';
 
 interface TissuSelectorProps {
   tissuValue: string | undefined

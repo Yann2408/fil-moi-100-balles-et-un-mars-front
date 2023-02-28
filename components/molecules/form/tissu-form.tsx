@@ -8,11 +8,10 @@ import useSWR from "swr";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from "react";
 import ITissu from "../../../interfaces/tissus.interface";
-import TissuTypeSelector from "../selector/tissu-type-selector";
+import TissuTypeSelector from "../selector/tissus/tissu-type-selector";
 import FormConfirm from "../../atoms/form-confirm";
 import { LoadingButton } from "@mui/lab";
 import { errorMessages } from "../../../hooks/utils";
-import { display } from "@mui/system";
 
 interface TissuFormProps {
     id?: number
@@ -99,7 +98,6 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
     useEffect(() => {
         if (tissu) {
-            console.log(tissu, "tissu user id")
             setDefaultTissu(tissu)
             setTissuTypeValue(tissu.tissu_type.name)
             setRatingValue(tissu.rating)
@@ -461,8 +459,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             rows={4}
                             label="Commentaire"
                             variant="outlined"
-                            error={errors?.stock?.message ? true : false}
-                            helperText={errors?.stock?.message}
+                            error={errors?.comment?.message ? true : false}
+                            helperText={errors?.comment?.message}
                             fullWidth
                             {...field}
                         />}
@@ -503,6 +501,5 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
         </Box>
 
     )
-
 }
 export default TissuForm
