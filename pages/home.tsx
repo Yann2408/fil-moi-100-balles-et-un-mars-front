@@ -7,7 +7,7 @@ const home: NextPage = () => {
     return(
         <Container>
             <Navbar />
-            <Typography>Hello world</Typography>
+            <Typography>Work in progress</Typography>
         </Container>
     )
 }

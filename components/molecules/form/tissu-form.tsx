@@ -98,7 +98,6 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
 
     useEffect(() => {
         if (tissu) {
-            console.log(tissu, "tissu user id")
             setDefaultTissu(tissu)
             setTissuTypeValue(tissu.tissu_type.name)
             setRatingValue(tissu.rating)
@@ -460,8 +459,8 @@ const TissuForm = (props: TissuFormProps): JSX.Element => {
                             rows={4}
                             label="Commentaire"
                             variant="outlined"
-                            error={errors?.stock?.message ? true : false}
-                            helperText={errors?.stock?.message}
+                            error={errors?.comment?.message ? true : false}
+                            helperText={errors?.comment?.message}
                             fullWidth
                             {...field}
                         />}
